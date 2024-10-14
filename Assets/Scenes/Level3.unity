@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17792873, g: 0.22277445, b: 0.30490386, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1087,12 +1086,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1001 &357837012
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9527,21 +9526,6 @@ PrefabInstance:
       propertyPath: myKim
       value: 
       objectReference: {fileID: 601951312}
-    - target: {fileID: 1034124237691063017, guid: 078ac4cfd02656d4eafd0ef44e98033a,
-        type: 3}
-      propertyPath: SkipIntro
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1034124237691063017, guid: 078ac4cfd02656d4eafd0ef44e98033a,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1049995173826597518, guid: 078ac4cfd02656d4eafd0ef44e98033a,
-        type: 3}
-      propertyPath: NextScene
-      value: Level1
-      objectReference: {fileID: 0}
     - target: {fileID: 4601961738845201628, guid: 078ac4cfd02656d4eafd0ef44e98033a,
         type: 3}
       propertyPath: m_LocalPosition.x
