@@ -18,11 +18,11 @@ using UnityEngine;
 
 public class CharacterController : MonoBehaviour
 {
-    const float ReachDistThreshold = 0.1f;
-    const float CharacterMoveSpeed = 1.0f;
+    public const float ReachDistThreshold = 0.1f;
+    public const float CharacterMoveSpeed = 1.0f;
     protected Animator myAnimator;
 
-    protected Grid.Tile myCurrentTile = null;
+    public Grid.Tile myCurrentTile = null;
     protected bool myReachedTile = false;
     protected bool myReachedDestination = false;
     protected List<Grid.Tile> myWalkBuffer = new List<Grid.Tile>();

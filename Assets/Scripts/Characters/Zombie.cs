@@ -2,81 +2,74 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//#     # #     #  #####  #     #    ######  ######     #    ### #     #  #####  
-//#     # #     # #     # #     #    #     # #     #   # #    #  ##    # #     # 
-//#     # #     # #       #     #    #     # #     #  #   #   #  # #   # #       
-//#     # #     # #  #### #######    ######  ######  #     #  #  #  #  #  #####  
-//#     # #     # #     # #     #    #     # #   #   #######  #  #   # #       # 
-//#     # #     # #     # #     #    #     # #    #  #     #  #  #    ## #     # 
-// #####   #####   #####  #     #    ######  #     # #     # ### #     #  #####  
-
+// This class represents a zombie character with specific movement logic.
 public class Zombie : CharacterController
 {
-    float uuugh     =       0;
-        Vector2 braaaaains = new Vector2(5, 8);
-    Vector2Int          uhghbrains = new Vector2Int(3, 7);
+    // Delay between movements
+    float moveDelay = 0;
+    
+    // Movement ranges for random delay and random movement distance
+    Vector2 delayRange = new Vector2(5, 8);
+    Vector2Int moveRange = new Vector2Int(3, 7);
+
+    // Initialization
     public override void StartCharacter()
     {
-        myCurrentTile   =             Grid.Instance.GetClosest(transform.position);
+        myCurrentTile = Grid.Instance.GetClosest(transform.position);
         base.StartCharacter();
     }
+
+    // Update logic for each frame
     public override void UpdateCharacter()
     {
         base.UpdateCharacter();
 
-        if (uuugh > 0)
+        if (moveDelay > 0)
         {
-                         uuugh -= Time.deltaTime;
+            moveDelay -= Time.deltaTime;
         }
-                else
-            {
-                        ughBrainBrainugh();
+        else
+        {
+            MoveZombie();
         }
     }
 
-    public void ughBrainBrainugh()
+    // Initiates zombie movement after random delay
+    public void MoveZombie()
     {
-        uuugh =  Random.Range(braaaaains.x,         braaaaains.y);
-                        brainbrainzombiebrain();
+        moveDelay = Random.Range(delayRange.x, delayRange.y);
+        DetermineMovementPath();
     }
 
-    public void brainbrainzombiebrain()
+    // Determines the movement path of the zombie
+    public void DetermineMovementPath()
     {
-            int         braaaaaains =           Random.Range(0, 4);
-        int ughghhhhhh =    Random.Range(uhghbrains.x, uhghbrains.y);
+        int direction = Random.Range(0, 4);
+        int steps = Random.Range(moveRange.x, moveRange.y);
+        List<Grid.Tile> movementPath = new List<Grid.Tile>();
+        Vector2Int movementDirection = Vector2Int.zero;
 
-        List<Grid.Tile>     brains =    new List<Grid.Tile>();
-
-        Vector2Int bruhains =       Vector2Int.zero;
-
-        switch (braaaaaains)
+        switch (direction)
         {
-                        case 0:
-                bruhains =  new Vector2Int(1, 0 );
-                break;
-            case 1:
-                bruhains = new          Vector2Int(-1, 0);
-                break;
-                            case 2:
-                            bruhains = new Vector2Int(0, 1);
-                break;
-                case 3:
-                bruhains = new Vector2Int(0, -1);
-                    break;
+            case 0: movementDirection = new Vector2Int(1, 0); break;
+            case 1: movementDirection = new Vector2Int(-1, 0); break;
+            case 2: movementDirection = new Vector2Int(0, 1); break;
+            case 3: movementDirection = new Vector2Int(0, -1); break;
         }
 
-        for (int brainses = 1;              brainses < ughghhhhhh + 1; brainses++)
+        for (int step = 1; step <= steps; step++)
         {
-                        Grid.Tile brainbrains = Grid.Instance.TryGetTile(new Vector2Int(myCurrentTile.x + (bruhains.x * brainses), myCurrentTile.y + (bruhains.y * brainses)));
-            if (brainbrains != null)
+            Grid.Tile tile = Grid.Instance.TryGetTile(new Vector2Int(
+                myCurrentTile.x + movementDirection.x * step,
+                myCurrentTile.y + movementDirection.y * step
+            ));
+
+            if (tile != null && !tile.occupied)
             {
-                    if (!brainbrains.occupied)
-                {
-                                        brains.Add(brainbrains);
-                    }
+                movementPath.Add(tile);
             }
         }
 
-            SetWalkBuffer(brains);
+        SetWalkBuffer(movementPath);
     }
 }

@@ -56,6 +56,10 @@ public class Grid : MonoBehaviour
         public int x, y = 0;
         public bool occupied = false;
         public bool finishTile = false;
+
+        public int gCost, hCost;  // Add if you don't already have it in PlayerPathfinding
+        public int fCost { get { return gCost + hCost; } }
+        public Tile parent;  // Parent for retracing path
     }
 
     public List<Tile> tiles = new List<Tile>();
@@ -190,7 +194,15 @@ public class Grid : MonoBehaviour
                 AlphaColor();
                 Vector3 cubeSize = new Vector3(Spacing * VisualTileSize, 0.1f, Spacing * VisualTileSize);
 
+                //if (scannedTiles != null)
+                    //if (scannedTiles.Contains(t))
+                        //Gizmos.color = Color.yellow;
 
+                //if (path != null)
+                    //if (path.Contains(t))
+                        //Gizmos.color = Color.black;
+
+                
                 Vector3 cubePos = new Vector3();
 
                 cubePos.x = (t.x * Spacing) + Spacing / 2.0f;
