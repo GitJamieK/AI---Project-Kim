@@ -4,12 +4,12 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class PlayerPathfinding : MonoBehaviour
+public class PlayerAI : MonoBehaviour
 {
     public List<Grid.Tile> zombieTiles = new List<Grid.Tile>();
     public List<Grid.Tile> closeToZombieTiles = new List<Grid.Tile>();
 
-    public static PlayerPathfinding Instance;
+    public static PlayerAI Instance;
 
     private void Awake()
     {
@@ -19,7 +19,7 @@ public class PlayerPathfinding : MonoBehaviour
         }
     }
 
-    public List<Grid.Tile> GetPath(Grid.Tile startTile, Grid.Tile endTile, Grid.Tile nearestZombieTile)
+    public List<Grid.Tile> GetPath(Grid.Tile startTile, Grid.Tile endTile)
     {
         if (startTile == null || endTile == null)
         {
@@ -37,6 +37,7 @@ public class PlayerPathfinding : MonoBehaviour
         {
             Grid.Tile currentTile = openSet[0];
 
+            // Find the tile with the lowest fCost
             for (int i = 1; i < openSet.Count; i++)
             {
                 if (openSet[i].fCost < currentTile.fCost || openSet[i].fCost == currentTile.fCost && openSet[i].hCost < currentTile.hCost)
@@ -48,13 +49,14 @@ public class PlayerPathfinding : MonoBehaviour
             openSet.Remove(currentTile);
             closedSet.Add(currentTile);
 
-            //endTile found
+            // Path to endTile found
             if (currentTile == endTile)
             {
                 newPath = RetracePath(startTile, endTile);
                 return newPath;
             }
 
+            // Get neighbors of the current tile and iterate through them
             foreach (Grid.Tile neighbour in GetNeighbours(currentTile))
             {
                 if (closedSet.Contains(neighbour) || neighbour.occupied)
@@ -62,15 +64,17 @@ public class PlayerPathfinding : MonoBehaviour
 
                 int newCostToNeighbour = currentTile.gCost + GetDistance(currentTile, neighbour);
 
+                // Adjust the cost if the tile is near zombies
                 if (zombieTiles.Contains(neighbour))
                 {
-                    newCostToNeighbour += 100000;
+                    newCostToNeighbour += 100000; // High cost for zombie tiles to avoid them
                 }
                 else if (closeToZombieTiles.Contains(neighbour))
                 {
-                    newCostToNeighbour += 1000;
+                    newCostToNeighbour += 1000; // Medium cost for tiles close to zombies
                 }
 
+                // If this path to the neighbor is cheaper or the neighbor is not yet in openSet
                 if (newCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour))
                 {
                     neighbour.gCost = newCostToNeighbour;
@@ -142,9 +146,10 @@ public class PlayerPathfinding : MonoBehaviour
         zombieTiles.Clear();
         closeToZombieTiles.Clear();
 
+        // Add zombie tiles and nearby tiles for avoidance purposes
         zombieTiles.AddRange(GetNeighbours(nearestZombie, 3));
 
-        //add neighbours of zombie tiles to closeToZombieTiles
+        // Add neighbors of zombie tiles to closeToZombieTiles for extra caution
         foreach (Grid.Tile zombieTile in zombieTiles)
         {
             List<Grid.Tile> temp = GetNeighbours(zombieTile, 1);

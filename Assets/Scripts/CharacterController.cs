@@ -50,8 +50,11 @@ public class CharacterController : MonoBehaviour
         }
         else if(myReachedTile)
         {
+        if (myAnimator != null)
+        {
             myAnimator.SetBool("Walk", false);
         }
+    }
     }
     public virtual void StartCharacter() { }
 
