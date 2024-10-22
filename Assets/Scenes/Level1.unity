@@ -20685,6 +20685,11 @@ PrefabInstance:
       propertyPath: myKim
       value: 
       objectReference: {fileID: 601951312}
+    - target: {fileID: 1049995173826597518, guid: 078ac4cfd02656d4eafd0ef44e98033a,
+        type: 3}
+      propertyPath: NextScene
+      value: Level2
+      objectReference: {fileID: 0}
     - target: {fileID: 4601961738845201628, guid: 078ac4cfd02656d4eafd0ef44e98033a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -20777,7 +20782,7 @@ PrefabInstance:
     - target: {fileID: 7573306222461496860, guid: cf10b3d86f04f434cbf29a2c3553fe97,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.32
+      value: -1.86
       objectReference: {fileID: 0}
     - target: {fileID: 7573306222461496860, guid: cf10b3d86f04f434cbf29a2c3553fe97,
         type: 3}

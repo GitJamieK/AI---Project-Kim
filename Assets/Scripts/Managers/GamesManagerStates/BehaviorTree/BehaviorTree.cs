@@ -17,6 +17,7 @@ public class behaviorTree
         outroState = Object.FindObjectOfType<OutroState>(); // Get a reference to the OutroState
     }
 
+    // Called every frame to update behavior
     public void UpdateBehavior()
     {
         // Retrieve zombies and burgers from the blackboard
@@ -52,6 +53,9 @@ public class behaviorTree
                     blackboard.SetValue("burgers", burgers); // Update the blackboard
 
                     Debug.Log("Burger collected. Remaining burgers: " + burgers.Count);
+
+                    // After collecting the burger, force path recalculation
+                    RecalculatePathToNextTarget();
                 }
 
                 // Store the closest burger on the blackboard for future use
@@ -70,10 +74,38 @@ public class behaviorTree
         if (Vector3.Distance(character.transform.position, winPosition) < 0.5f)
         {
             // Trigger the next level
-            outroState.NextLevel();
+            if (outroState != null)
+            {
+                outroState.NextLevel();
+            }
+            else
+            {
+                Debug.LogWarning("OutroState not found, cannot load next level.");
+            }
         }
     }
 
+    // Recalculate path to the next target
+    private void RecalculatePathToNextTarget()
+    {
+        List<Transform> burgers = blackboard.GetValue<List<Transform>>("burgers");
+
+        if (burgers.Count > 0)
+        {
+            // Recalculate path to the next burger
+            Transform closestBurger = GetClosestBurger(burgers);
+            character.MoveTowardsTarget(closestBurger.position);
+            Debug.Log("Recalculating path to next burger.");
+        }
+        else
+        {
+            // All burgers are collected, move to the finish
+            MoveToFinish();
+            Debug.Log("All burgers collected, moving to finish.");
+        }
+    }
+
+    // Check if a zombie is nearby
     private bool IsZombieNearby(List<GameObject> zombies, out Vector3 avoidancePosition)
     {
         avoidancePosition = Vector3.zero;

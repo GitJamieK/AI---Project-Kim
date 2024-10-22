@@ -14,8 +14,21 @@ public class Kim : CharacterController
     private List<Grid.Tile> currentPath = new List<Grid.Tile>();
     private int currentPathIndex = 0;
 
+    // Called automatically when the scene loads
     private void Start()
     {
+        // Reinitialize all necessary game variables
+        InitializeState();
+    }
+
+    // Called to initialize or reinitialize state
+    private void InitializeState()
+    {
+        // Clear the current path
+        currentPath.Clear();
+        currentPathIndex = 0;
+
+        // Reinitialize the blackboard and find all burgers/zombies in the scene
         blackboard = new Blackboard();
 
         // Find all burgers in the scene and add them to the list
@@ -53,6 +66,7 @@ public class Kim : CharacterController
         }
     }
 
+    // This method is called every frame to update Kim's state
     public override void UpdateCharacter()
     {
         base.UpdateCharacter();
@@ -68,6 +82,7 @@ public class Kim : CharacterController
         }
     }
 
+    // Method to move towards a specific target
     public void MoveTowardsTarget(Vector3 targetPosition)
     {
         Grid.Tile startTile = Grid.Instance?.GetClosest(transform.position);
@@ -97,6 +112,7 @@ public class Kim : CharacterController
         }
     }
 
+    // Method to recalculate path to avoid zombies
     public void RecalculatePathAvoidingZombie(Vector3 avoidanceTarget)
     {
         // Use the avoidance target to recalculate path to avoid the zombie
