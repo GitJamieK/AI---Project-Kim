@@ -37,7 +37,7 @@ public class PlayerAI : MonoBehaviour
         {
             Grid.Tile currentTile = openSet[0];
 
-            // Find the tile with the lowest fCost
+            //find tile with the lowest fCost
             for (int i = 1; i < openSet.Count; i++)
             {
                 if (openSet[i].fCost < currentTile.fCost || openSet[i].fCost == currentTile.fCost && openSet[i].hCost < currentTile.hCost)
@@ -49,14 +49,13 @@ public class PlayerAI : MonoBehaviour
             openSet.Remove(currentTile);
             closedSet.Add(currentTile);
 
-            // Path to endTile found
+            //path to endTile
             if (currentTile == endTile)
             {
                 newPath = RetracePath(startTile, endTile);
                 return newPath;
             }
 
-            // Get neighbors of the current tile and iterate through them
             foreach (Grid.Tile neighbour in GetNeighbours(currentTile))
             {
                 if (closedSet.Contains(neighbour) || neighbour.occupied)
@@ -64,17 +63,15 @@ public class PlayerAI : MonoBehaviour
 
                 int newCostToNeighbour = currentTile.gCost + GetDistance(currentTile, neighbour);
 
-                // Adjust the cost if the tile is near zombies
                 if (zombieTiles.Contains(neighbour))
                 {
-                    newCostToNeighbour += 100000; // High cost for zombie tiles to avoid them
+                    newCostToNeighbour += 100000;
                 }
                 else if (closeToZombieTiles.Contains(neighbour))
                 {
-                    newCostToNeighbour += 1000; // Medium cost for tiles close to zombies
+                    newCostToNeighbour += 1000;
                 }
 
-                // If this path to the neighbor is cheaper or the neighbor is not yet in openSet
                 if (newCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour))
                 {
                     neighbour.gCost = newCostToNeighbour;
@@ -91,7 +88,7 @@ public class PlayerAI : MonoBehaviour
         return newPath;
     }
 
-    // Go back and check the parents of each tile to get the path back to start
+    //check the parents of each tile to get back to start
     List<Grid.Tile> RetracePath(Grid.Tile startTile, Grid.Tile endTile)
     {
         List<Grid.Tile> path = new List<Grid.Tile>();
@@ -107,7 +104,7 @@ public class PlayerAI : MonoBehaviour
         return path;
     }
 
-    // Depth decides how many tiles away from the origin tile to check, basically the area around the tile you wanna check
+    //depth decides how many tiles away from the origin tile to check, basically the area around the tile you wanna check
     public List<Grid.Tile> GetNeighbours(Grid.Tile origin, int depth = 1)
     {
         List<Grid.Tile> neighbours = new List<Grid.Tile>();
@@ -146,10 +143,8 @@ public class PlayerAI : MonoBehaviour
         zombieTiles.Clear();
         closeToZombieTiles.Clear();
 
-        // Add zombie tiles and nearby tiles for avoidance purposes
         zombieTiles.AddRange(GetNeighbours(nearestZombie, 3));
 
-        // Add neighbors of zombie tiles to closeToZombieTiles for extra caution
         foreach (Grid.Tile zombieTile in zombieTiles)
         {
             List<Grid.Tile> temp = GetNeighbours(zombieTile, 1);

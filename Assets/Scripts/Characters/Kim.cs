@@ -14,24 +14,18 @@ public class Kim : CharacterController
     private List<Grid.Tile> currentPath = new List<Grid.Tile>();
     private int currentPathIndex = 0;
 
-    // Called automatically when the scene loads
     private void Start()
     {
-        // Reinitialize all necessary game variables
         InitializeState();
     }
 
-    // Called to initialize or reinitialize state
     private void InitializeState()
     {
-        // Clear the current path
         currentPath.Clear();
         currentPathIndex = 0;
 
-        // Reinitialize the blackboard and find all burgers/zombies in the scene
         blackboard = new Blackboard();
 
-        // Find all burgers in the scene and add them to the list
         GameObject[] burgerObjects = GameObject.FindGameObjectsWithTag("Burger");
         foreach (var burger in burgerObjects)
         {
@@ -41,7 +35,6 @@ public class Kim : CharacterController
             }
         }
 
-        // Find all zombies in the scene and add them to the list
         GameObject[] zombieObjects = GameObject.FindGameObjectsWithTag("Zombie");
         foreach (var zombie in zombieObjects)
         {
@@ -51,11 +44,10 @@ public class Kim : CharacterController
             }
         }
 
-        // Store burgers and zombies in the blackboard
+        //burgers and zombies in the blackboard
         blackboard.SetValue("burgers", burgers);
         blackboard.SetValue("zombies", zombies);
 
-        // Initialize the behavior tree with the character reference and blackboard
         if (burgers.Count > 0)
         {
             behaviorTree = new behaviorTree(this, blackboard);
@@ -66,12 +58,10 @@ public class Kim : CharacterController
         }
     }
 
-    // This method is called every frame to update Kim's state
     public override void UpdateCharacter()
     {
         base.UpdateCharacter();
 
-        // Update behavior tree if it is initialized
         if (behaviorTree != null)
         {
             behaviorTree.UpdateBehavior();
@@ -82,7 +72,7 @@ public class Kim : CharacterController
         }
     }
 
-    // Method to move towards a specific target
+    //move towards a specific target
     public void MoveTowardsTarget(Vector3 targetPosition)
     {
         Grid.Tile startTile = Grid.Instance?.GetClosest(transform.position);
@@ -90,20 +80,19 @@ public class Kim : CharacterController
 
         if (startTile != null && targetTile != null)
         {
-            // Recalculate path if there is no current path or we have reached the end of the current path
+            //recalculate path if there is no current path or when reached the end of the current path
             if (currentPath.Count == 0 || currentPathIndex >= currentPath.Count)
             {
                 currentPath = PlayerAI.Instance?.GetPath(startTile, targetTile);
-                currentPathIndex = 0; // Reset path index to start following the new path
+                currentPathIndex = 0; //reset path index to start following the new path
             }
 
-            // Follow the current path
+            //follow current path
             if (currentPath != null && currentPath.Count > 0 && currentPathIndex < currentPath.Count)
             {
                 Vector3 nextPosition = Grid.Instance.WorldPos(currentPath[currentPathIndex]);
-                transform.position = Vector3.MoveTowards(transform.position, nextPosition, Time.deltaTime * 3f); // Adjust speed as needed
+                transform.position = Vector3.MoveTowards(transform.position, nextPosition, Time.deltaTime * 3f);
 
-                // If Kim reaches the current target tile, move to the next tile
                 if (Vector3.Distance(transform.position, nextPosition) < 0.1f)
                 {
                     currentPathIndex++;
@@ -112,17 +101,16 @@ public class Kim : CharacterController
         }
     }
 
-    // Method to recalculate path to avoid zombies
+    //recalculate path to avoid zombies
     public void RecalculatePathAvoidingZombie(Vector3 avoidanceTarget)
     {
-        // Use the avoidance target to recalculate path to avoid the zombie
         Grid.Tile startTile = Grid.Instance?.GetClosest(transform.position);
         Grid.Tile targetTile = Grid.Instance?.GetClosest(avoidanceTarget);
 
         if (startTile != null && targetTile != null)
         {
             currentPath = PlayerAI.Instance?.GetPath(startTile, targetTile);
-            currentPathIndex = 0; // Reset path index to start following the new path
+            currentPathIndex = 0; //reset path index to start following the new path
         }
     }
 }
